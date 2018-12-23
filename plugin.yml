@@ -1,0 +1,5 @@
+name: ModuleNick
+author: xMalware
+version: 1.0
+description: :o
+main: fr.badblock.bungee.modules.serversync.ModuleServerSync
