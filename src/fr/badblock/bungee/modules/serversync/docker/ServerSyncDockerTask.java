@@ -27,7 +27,7 @@ import redis.clients.jedis.Jedis;
  * @author xMalware
  *
  */
-public class BungeeServerSyncTask extends Thread {
+public class ServerSyncDockerTask extends Thread {
 
 	public static Map<String, DockerServerData> serverData = new HashMap<>();
 	public static Map<String, List<JsonObject>> clusterData = new HashMap<>();
@@ -140,7 +140,7 @@ public class BungeeServerSyncTask extends Thread {
 	/**
 	 * Constructor of a new Bungee task Automatic task start when instantiating
 	 */
-	public BungeeServerSyncTask() {
+	public ServerSyncDockerTask() {
 		// Start the thread
 		this.start();
 	}

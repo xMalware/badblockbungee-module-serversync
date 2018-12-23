@@ -1,29 +1,38 @@
 package fr.badblock.bungee.modules.serversync;
 
-import fr.badblock.bungee.modules.serversync.docker.BungeeServerSyncTask;
+import java.util.ArrayList;
+import java.util.List;
+
+import fr.badblock.bungee.modules.serversync.docker.ServerSyncDockerTask;
+import fr.badblock.bungee.modules.serversync.docker.ServerSyncStaticTask;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class ModuleServerSync extends Plugin
 {
 
-	private Thread	thread;
-	
+	private List<Thread>	syncThreads;
+
 	@Override
 	public void onEnable()
 	{
-		thread = new BungeeServerSyncTask();
+		syncThreads = new ArrayList<>();
+		syncThreads.add(new ServerSyncDockerTask());
+		syncThreads.add(new ServerSyncStaticTask());
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onDisable()
 	{
-		if (thread == null)
+		if (syncThreads == null)
 		{
 			return;
 		}
-		
-		thread.stop();
+
+		for (Thread thread : syncThreads)
+		{
+			thread.stop();
+		}
 	}
-	
+
 }
