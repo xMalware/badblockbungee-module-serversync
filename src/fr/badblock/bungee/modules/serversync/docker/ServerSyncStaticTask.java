@@ -89,6 +89,23 @@ public class ServerSyncStaticTask extends Thread {
 					BungeeCord.getInstance().getServers().put(serverObject.getName(), server);
 					BadBungee.log("§d[StaticServers] §aAdded server: §e" + key + " §ahosted by §e" + serverObject.getIp());
 				}
+				else
+				{
+					try
+					{
+						ServerObject dockerServerData = tempServerData.get(key);
+						ServerObject current = serverData.get(key);
+						if (!dockerServerData.equals(current))
+						{
+							tempServerData.remove(key);
+							BadBungee.log("§d[StaticServers] §cRemoved server: §e" + key + " §c(because of difference, wait for being updated).");
+						}
+					}
+					catch (Exception error)
+					{
+						error.printStackTrace();
+					}
+				}
 			}
 
 			for (String key : serverData.keySet())
@@ -120,8 +137,15 @@ public class ServerSyncStaticTask extends Thread {
 	public void run() {
 		// While the task is allowed to run
 		while (run) {
-			// Send a keep alive packet
-			sync();
+			try
+			{
+				// Send a keep alive packet
+				sync();
+			}
+			catch (Exception error)
+			{
+
+			}
 			// Sleep 1 second
 			TimeUtils.sleepInSeconds(2);
 		}

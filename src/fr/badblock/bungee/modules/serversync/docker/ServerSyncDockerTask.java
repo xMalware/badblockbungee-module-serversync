@@ -110,16 +110,35 @@ public class ServerSyncDockerTask extends Thread {
 
 		synchronized (syncThread)
 		{
-			for (String key : tempServerData.keySet())
+			Iterator<String> iterator = tempServerData.keySet().iterator();
+			while (iterator.hasNext())
 			{
+				String key = iterator.next();
 				if (!serverData.containsKey(key))
 				{
-					DockerServerData dockerServerData =tempServerData.get(key);
+					DockerServerData dockerServerData = tempServerData.get(key);
 					ServerInfo server = BungeeCord.getInstance().constructServerInfo(dockerServerData.getServerName(),
 							new InetSocketAddress(dockerServerData.getIp(), dockerServerData.getPort()), dockerServerData.getServerName(), false);
 					// Add the server
 					BungeeCord.getInstance().getServers().put(dockerServerData.getServerName(), server);
 					BadBungee.log("§d[Docker] §aAdded server: §e" + key + " §ahosted by §e" + dockerServerData.getSource());
+				}
+				else
+				{
+					try
+					{
+						DockerServerData dockerServerData = tempServerData.get(key);
+						DockerServerData current = serverData.get(key);
+						if (!dockerServerData.equals(current))
+						{
+							iterator.remove();
+							BadBungee.log("§d[Docker] §cRemoved server: §e" + key + " §c(because of difference, wait for being updated).");
+						}
+					}
+					catch (Exception error)
+					{
+						error.printStackTrace();
+					}
 				}
 			}
 
