@@ -94,11 +94,15 @@ public class ServerSyncDockerTask extends Thread {
 					while (iterator.hasNext())
 					{
 						JsonObject jsonServer = iterator.next().getAsJsonObject();
-						String name = entr.getKey() + "_" + jsonServer.get("id").getAsInt();
-						String ip = jsonServer.get("ip").getAsString();
-						int port = jsonServer.get("port").getAsInt();
-						DockerServerData dockerServerData = new DockerServerData(name, fullId, ip, port);
-						tempServerData.put(name, dockerServerData);
+						long lastKeepAlive = jsonServer.get("lastKeepAlive").getAsLong();
+						if (lastKeepAlive > System.currentTimeMillis())
+						{
+							String name = entr.getKey() + "_" + jsonServer.get("id").getAsInt();
+							String ip = jsonServer.get("ip").getAsString();
+							int port = jsonServer.get("port").getAsInt();
+							DockerServerData dockerServerData = new DockerServerData(name, fullId, ip, port);
+							tempServerData.put(name, dockerServerData);
+						}
 					}
 				}
 
